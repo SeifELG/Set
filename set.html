@@ -13,7 +13,7 @@
 			width:100px;
 			height:150px;
 			border: 1px black solid;
-			border-radius: 20px;
+			border-radius: 15px;
 			display:flex;
 			flex-direction: column;
 			justify-content: center;
@@ -27,11 +27,6 @@
 		.symbol{
 			margin:3px;
 		}
-
-
-
-
-
 
 		</style>
 
@@ -50,13 +45,27 @@
 				<img class="symbol" src="images/diamond_solid_red.png">
 			</div>
 
+			<div id="replace">
+			</div>
+
 
 		</div>
 
 
 		<script type="text/javascript">
 
-			$(".card").draggable();
+			function renderCard(a,b,c,d){
+				var openDiv = "<div class=\"card\">";
+				var image= "<img class=\"symbol\" src=\"images/";
+				var image = image + a + "_" + b + "_" + c + ".png\">";
+				image = image.repeat(d);
+				var closeDiv = "</div>";
+				return openDiv + image + closeDiv;
+			}
+
+			$("body").append( renderCard("squiggle", "open", "green", 2))
+			$("body").append( renderCard("squiggle", "open", "red",2))
+			$("body").append( renderCard("diamond", "striped", "blue", 1 ))
 
 		</script>
 
