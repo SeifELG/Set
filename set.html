@@ -30,8 +30,10 @@
 
 		#gameBoard{
 			display:grid;
-			grid-template-columns: 100px 100px 100px 100px 100px 100px;
-			grid-gap: 10px;
+			grid-template-columns: 100px 100px 100px 100px ;
+			grid-column-gap:40px;
+			grid-row-gap: 12px;
+			margin:50px;
 		}
 
 		</style>
@@ -86,7 +88,7 @@
 			makeDeck();
 
 			function renderCard(x){
-				var openDiv = "<div class=\"card\">";
+				var openDiv = "<div id=\"" + x[4]+ "\" class=\"card\">";
 				var image= "<img class=\"symbol\" src=\"images/";
 				var image = image + x[0] + "_" + x[1] + "_" + x[2] + ".png\">";
 				image = image.repeat(x[3]);
@@ -127,7 +129,7 @@
 			//$("body").append( renderCard("squiggle", "open", "green", 2))
 
 			$(".card").click(function(){
-				console.log(event);
+				console.log(this.id);
 			});
 
 		</script>
