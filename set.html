@@ -71,13 +71,15 @@
 			var color = ["blue", "green", "red"];
 			var number = [1,2,3];
 
-			function makeDeck(){
+			var referenceDeck = [];
+
+			function makeDeck(name){
 				var id = 1;
 				for( var s = 0; s<shapes.length;s++){
 					for( var f = 0; f<fill.length;f++){
 						for( var c = 0; c<color.length;c++){
 							for( var n = 0; n<number.length;n++){
-							deck.push([shapes[s], fill[f],color[c],number[n],id]);
+							name.push([shapes[s], fill[f],color[c],number[n],id]);
 							id++;
 							}
 						}
@@ -85,7 +87,8 @@
 				}
 			}
 
-			makeDeck();
+			makeDeck(deck);
+			makeDeck(referenceDeck);
 
 			function renderCard(x){
 				var openDiv = "<div id=\"" + x[4]+ "\" class=\"card\">";
@@ -100,11 +103,13 @@
 
 			var displayDeck = []
 			var displayNumber = 12;
-			for (var i=0;i<displayNumber;i++){ //initialise displayDeck
-				displayDeck[i]=deck[i];
+			for (var i=0;i<displayNumber;i++){ // push fisrt 12 cards into displayDeck
+				displayDeck[i]=deck[0];
+				deck.splice(0,1);
 			}
 
 			for (var i=0;i<displayDeck.length;i++){ 		//renders each card in the deck
+				//might need to clear the #gameboard div beforehand to refresh
 				$("#gameBoard").append( renderCard(displayDeck[i]));
 			}
 
@@ -126,11 +131,52 @@
 			  return array;
 			}
 
-			//$("body").append( renderCard("squiggle", "open", "green", 2))
+			var cardSelected = [];
+
 
 			$(".card").click(function(){
-				console.log(this.id);
+				var cardID = this.id;
+				console.log(cardID, getProperty(cardID,0));
+				cardSelected.push(cardID);
+
+				if (cardSelected.length>2){
+					console.log(cardSelected);
+					//check that the cards make a set here
+					if(checkSet()){
+						console.log("YOU GOT A SET");
+					} else {
+						console.log("no set");
+					}
+					cardSelected = [];
+				}
 			});
+
+			function getProperty(id,x){
+				var index = id-1;
+				return referenceDeck[index][x];
+			}
+
+			function checkProperty(x){
+				var a = getProperty(cardSelected[0],x);
+				var b = getProperty(cardSelected[1],x);
+				var c = getProperty(cardSelected[2],x);
+
+				if ( (a == b && b == c) || (a != b && b!=c && c!= a) ){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+
+			function checkSet(){
+				if (checkProperty(0) && checkProperty(1) && checkProperty(2) && checkProperty(3)){
+					return true;
+				} else{
+					return false;
+				}
+			}
+
 
 		</script>
 
