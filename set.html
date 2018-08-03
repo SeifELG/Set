@@ -43,9 +43,9 @@
 	<body>
 		<div id="mainBody">
 
+			<input id="openButton" type="button" value="open 3"></input>
+
 			<div id="gameBoard">
-
-
 
 			</div>
 
@@ -108,10 +108,14 @@
 				deck.splice(0,1);
 			}
 
-			for (var i=0;i<displayDeck.length;i++){ 		//renders each card in the deck
-				//might need to clear the #gameboard div beforehand to refresh
-				$("#gameBoard").append( renderCard(displayDeck[i]));
+			function refreshDisplay(){
+				$("#gameBoard").html("");
+				for (var i=0;i<displayDeck.length;i++){ 		//renders each card in the deck
+					$("#gameBoard").append( renderCard(displayDeck[i]));
+				}
 			}
+
+			refreshDisplay();
 
 			function shuffle(array) {
 			  var currentIndex = array.length, temporaryValue, randomIndex;
@@ -134,16 +138,18 @@
 			var cardSelected = [];
 
 
-			$(".card").click(function(){
+			//$(".card").click(function(){  <-- don't use this. doesn't work for newly created DOM elements
+			$(document).on('click', '.card', function (e) {
 				var cardID = this.id;
 				console.log(cardID, getProperty(cardID,0));
 				cardSelected.push(cardID);
 
 				if (cardSelected.length>2){
 					console.log(cardSelected);
-					//check that the cards make a set here
 					if(checkSet()){
 						console.log("YOU GOT A SET");
+						updateDisplayDeck();
+						refreshDisplay();
 					} else {
 						console.log("no set");
 					}
@@ -177,6 +183,21 @@
 				}
 			}
 
+			function updateDisplayDeck(){
+				for(var x=0;x<cardSelected.length;x++){
+					for(var i=0;i<displayDeck.length;i++){
+						if (displayDeck[i][4] == cardSelected[x]){
+							displayDeck[i] = deck[0];
+							deck.splice(0,1);
+						}
+					}
+				}
+			}
+
+			$("#openButton").click(function(){
+				alert("wow");
+
+			});
 
 		</script>
 
