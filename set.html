@@ -24,6 +24,15 @@
 		.card:hover{
 			background-color: #ffffd0;
 		}
+
+		.selected{
+			background-color: #f0d070;
+		}
+
+		.selected:hover{
+			background-color: #f0e090 !important ;
+		}
+
 		.symbol{
 			margin:3px;
 		}
@@ -141,20 +150,31 @@
 			//$(".card").click(function(){  <-- don't use this. doesn't work for newly created DOM elements
 			$(document).on('click', '.card', function (e) {
 				var cardID = this.id;
+				toggleHighlight(cardID);
 				console.log(cardID, getProperty(cardID,0));
-				cardSelected.push(cardID);
+				var arrayLoc = $.inArray(cardID,cardSelected)
+
+				if (arrayLoc < 0){
+					cardSelected.push(cardID);
+				} else{
+					cardSelected.splice(arrayLoc,1);
+				}
+
+				console.log(cardSelected);
 
 				if (cardSelected.length>2){
-					console.log(cardSelected);
 					if(checkSet()){
 						console.log("YOU GOT A SET");
 						updateDisplayDeck();
 						refreshDisplay();
 					} else {
 						console.log("no set");
+						refreshDisplay();
 					}
 					cardSelected = [];
 				}
+
+
 			});
 
 			function getProperty(id,x){
@@ -183,7 +203,7 @@
 				}
 			}
 
-			function updateDisplayDeck(){
+			function updateDisplayDeck(){ //replaces correct set with next three cards
 				for(var x=0;x<cardSelected.length;x++){
 					for(var i=0;i<displayDeck.length;i++){
 						if (displayDeck[i][4] == cardSelected[x]){
@@ -195,9 +215,21 @@
 			}
 
 			$("#openButton").click(function(){
-				alert("wow");
-
+				displayDeck = shuffle(displayDeck);
+				refreshDisplay();
 			});
+
+			function toggleHighlight(id){
+				x = "#" + id ;
+				$(x).toggleClass("selected");
+			}
+
+			function updateHighlight(){
+				for(var x=0;x<cardSelected.length;x++){
+					toggleHighlight(cardSelected[x]);
+				}
+			}
+
 
 		</script>
 
