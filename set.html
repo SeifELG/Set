@@ -9,27 +9,41 @@
 
 		<style type="text/css">
 
-			.s1{
-				width: 300px;
-				height: 100px;
-				border-radius: 50px;
-				background-color: red;
-			}
+		.card{
+			width:100px;
+			height:150px;
+			border: 1px black solid;
+			border-radius: 15px;
+			display:flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			//margin:10px;
+		}
 
-			.s2{
-				width: 300px;
-				height: 100px;
-				//border-radius: 50px;
-				background-color: green;
-			}
+		.card:hover{
+			background-color: #ffffd0;
+		}
 
-			.s3{
+		.selected{
+			background-color: #f0d070;
+		}
 
-			}
+		.selected:hover{
+			background-color: #f0e090 !important ;
+		}
 
+		.symbol{
+			margin:3px;
+		}
 
-
-
+		#gameBoard{
+			display:grid;
+			grid-template-columns: 100px 100px 100px 100px ;
+			grid-column-gap:40px;
+			grid-row-gap: 12px;
+			margin:50px;
+		}
 
 		</style>
 
@@ -38,8 +52,21 @@
 	<body>
 		<div id="mainBody">
 
-			<div class="s1 "></div>
-			<div class="s2"></div>
+			<input id="openButton" type="button" value="open 3"></input>
+
+			<div id="gameBoard">
+
+			</div>
+
+			<!---
+			<div class="card">
+				<img class="symbol" src="images/diamond_solid_red.png">
+				<img class="symbol" src="images/diamond_solid_red.png">
+				<img class="symbol" src="images/diamond_solid_red.png">
+			</div>
+			--->
+			<div id="replace">
+			</div>
 
 
 		</div>
@@ -47,7 +74,162 @@
 
 		<script type="text/javascript">
 
-			$("#shape").draggable();
+			var deck = [];
+			var shapes = ["diamond", "oval", "squiggle"];
+			var fill = ["open", "solid", "striped"];
+			var color = ["blue", "green", "red"];
+			var number = [1,2,3];
+
+			var referenceDeck = [];
+
+			function makeDeck(name){
+				var id = 1;
+				for( var s = 0; s<shapes.length;s++){
+					for( var f = 0; f<fill.length;f++){
+						for( var c = 0; c<color.length;c++){
+							for( var n = 0; n<number.length;n++){
+							name.push([shapes[s], fill[f],color[c],number[n],id]);
+							id++;
+							}
+						}
+					}
+				}
+			}
+
+			makeDeck(deck);
+			makeDeck(referenceDeck);
+
+			function renderCard(x){
+				var openDiv = "<div id=\"" + x[4]+ "\" class=\"card\">";
+				var image= "<img class=\"symbol\" src=\"images/";
+				var image = image + x[0] + "_" + x[1] + "_" + x[2] + ".png\">";
+				image = image.repeat(x[3]);
+				var closeDiv = "</div>";
+				return openDiv + image + closeDiv;
+			}
+
+			deck = shuffle(deck);
+
+			var displayDeck = []
+			var displayNumber = 12;
+			for (var i=0;i<displayNumber;i++){ // push fisrt 12 cards into displayDeck
+				displayDeck[i]=deck[0];
+				deck.splice(0,1);
+			}
+
+			function refreshDisplay(){
+				$("#gameBoard").html("");
+				for (var i=0;i<displayDeck.length;i++){ 		//renders each card in the deck
+					$("#gameBoard").append( renderCard(displayDeck[i]));
+				}
+			}
+
+			refreshDisplay();
+
+			function shuffle(array) {
+			  var currentIndex = array.length, temporaryValue, randomIndex;
+
+			  // While there remain elements to shuffle...
+			  while (0 !== currentIndex) {
+
+			    // Pick a remaining element...
+			    randomIndex = Math.floor(Math.random() * currentIndex);
+			    currentIndex -= 1;
+
+			    // And swap it with the current element.
+			    temporaryValue = array[currentIndex];
+			    array[currentIndex] = array[randomIndex];
+			    array[randomIndex] = temporaryValue;
+			  }
+			  return array;
+			}
+
+			var cardSelected = [];
+
+
+			//$(".card").click(function(){  <-- don't use this. doesn't work for newly created DOM elements
+			$(document).on('click', '.card', function (e) {
+				var cardID = this.id;
+				toggleHighlight(cardID);
+				console.log(cardID, getProperty(cardID,0));
+				var arrayLoc = $.inArray(cardID,cardSelected)
+
+				if (arrayLoc < 0){
+					cardSelected.push(cardID);
+				} else{
+					cardSelected.splice(arrayLoc,1);
+				}
+
+				console.log(cardSelected);
+
+				if (cardSelected.length>2){
+					if(checkSet()){
+						console.log("YOU GOT A SET");
+						updateDisplayDeck();
+						refreshDisplay();
+					} else {
+						console.log("no set");
+						refreshDisplay();
+					}
+					cardSelected = [];
+				}
+
+
+			});
+
+			function getProperty(id,x){
+				var index = id-1;
+				return referenceDeck[index][x];
+			}
+
+			function checkProperty(x){
+				var a = getProperty(cardSelected[0],x);
+				var b = getProperty(cardSelected[1],x);
+				var c = getProperty(cardSelected[2],x);
+
+				if ( (a == b && b == c) || (a != b && b!=c && c!= a) ){
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+
+			function checkSet(){
+				if (checkProperty(0) && checkProperty(1) && checkProperty(2) && checkProperty(3)){
+					return true;
+				} else{
+					return false;
+				}
+			}
+
+			function updateDisplayDeck(){ //replaces correct set with next three cards
+				for(var x=0;x<cardSelected.length;x++){
+					for(var i=0;i<displayDeck.length;i++){
+						if (displayDeck[i][4] == cardSelected[x]){
+							displayDeck[i] = deck[0];
+							deck.splice(0,1);
+						}
+					}
+				}
+			}
+
+			$("#openButton").click(function(){
+				displayDeck = shuffle(displayDeck);
+				refreshDisplay();
+			});
+
+			function toggleHighlight(id){
+				x = "#" + id ;
+				$(x).toggleClass("selected");
+			}
+
+			function updateHighlight(){
+				for(var x=0;x<cardSelected.length;x++){
+					toggleHighlight(cardSelected[x]);
+				}
+			}
+
 
 		</script>
 
