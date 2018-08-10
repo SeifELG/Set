@@ -231,6 +231,34 @@
 			}
 
 
+			function findSet(){
+				cardSelected = [];
+
+				for (var a=0; a<displayDeck.length;a++){
+					cardSelected[0] = displayDeck[a][4];
+					for (var b=0; b<displayDeck.length;b++){
+						cardSelected[1] = displayDeck[b][4];
+						for (var c=0; c<displayDeck.length;c++){
+							cardSelected[2] = displayDeck[c][4];
+							if (checkSet() && !checkDups(cardSelected)){
+								console.log(cardSelected);
+								
+							}
+						}
+					}
+				}
+			}
+
+			function checkDups(array){
+				array = array.sort();
+				for(var i=0;i<array.length;i++){
+					if(array[i] == array[i+1]){
+						return true;
+					}
+				}
+				return false;
+			}
+
 		</script>
 
 	</body>
