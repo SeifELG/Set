@@ -21,7 +21,7 @@
 			//margin:10px;
 		}
 
-		.card:hover{
+		.card:hover, .button:hover{
 			background-color: #ffffd0;
 		}
 
@@ -42,8 +42,25 @@
 			grid-template-columns: 100px 100px 100px 100px ;
 			grid-column-gap:40px;
 			grid-row-gap: 12px;
-			margin:50px;
+			margin:20px;
 		}
+
+		.button{
+			border: 1px black solid;
+			width:200px;
+			height:100px;
+			margin-bottom: 20px;
+			text-align: center;
+			vertical-align: middle;
+			line-height: 100px;
+		}
+
+		#buttonContainer{
+			float:left;
+			margin-right:20px;
+		}
+
+
 
 		</style>
 
@@ -52,7 +69,18 @@
 	<body>
 		<div id="mainBody">
 
+			<div id="buttonContainer">
+				<div class="button"> three more</div>
+				<div class="button" id="findSetButton"> find set</div>
+				<div class="button"> easy mode</div>
+				<div class="button"> how to play</div>
+
+
+			</div>
+
+			<!---
 			<input id="openButton" type="button" value="open 3"></input>
+			--->
 
 			<div id="gameBoard">
 
@@ -214,9 +242,8 @@
 				}
 			}
 
-			$("#openButton").click(function(){
-				displayDeck = shuffle(displayDeck);
-				refreshDisplay();
+			$("#findSetButton").click(function(){
+				findSet();
 			});
 
 			function toggleHighlight(id){
@@ -230,9 +257,13 @@
 				}
 			}
 
+			function isInArray(value, array) {
+				return array.indexOf(value) > -1;
+			}
 
-			function findSet(){
+			/*function findSet(){
 				cardSelected = [];
+				var sets = [];
 
 				for (var a=0; a<displayDeck.length;a++){
 					cardSelected[0] = displayDeck[a][4];
@@ -241,9 +272,32 @@
 						for (var c=0; c<displayDeck.length;c++){
 							cardSelected[2] = displayDeck[c][4];
 							if (checkSet() && !checkDups(cardSelected)){
+								cardSelected.sort();
 								console.log(cardSelected);
-								
+								//if (!isInArray(cardSelected,sets)){
+									sets.push(cardSelected);
+								//}
 							}
+						}
+					}
+				}
+
+				cardSelected=[];
+				console.log(sets);
+			}*/
+
+			function findSet(){
+				var localSet = [];
+
+				for (var a=0;a<displayDeck.length;a++){
+					localSet[0]=displayDeck[a][4];
+					for (var b=0;b<displayDeck.length;b++){
+						localSet[1]=displayDeck[b][4];
+						for (var c=0;a<displayDeck.length;c++){
+							localSet[2]=displayDeck[c][4];
+
+							if (checkSet)
+
 						}
 					}
 				}
@@ -258,6 +312,8 @@
 				}
 				return false;
 			}
+
+
 
 		</script>
 
