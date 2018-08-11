@@ -191,7 +191,7 @@
 				console.log(cardSelected);
 
 				if (cardSelected.length>2){
-					if(checkSet()){
+					if(checkSet(cardSelected)){
 						console.log("YOU GOT A SET");
 						updateDisplayDeck();
 						refreshDisplay();
@@ -210,10 +210,10 @@
 				return referenceDeck[index][x];
 			}
 
-			function checkProperty(x){
-				var a = getProperty(cardSelected[0],x);
-				var b = getProperty(cardSelected[1],x);
-				var c = getProperty(cardSelected[2],x);
+			function checkProperty(array,x){
+				var a = getProperty(array[0],x);
+				var b = getProperty(array[1],x);
+				var c = getProperty(array[2],x);
 
 				if ( (a == b && b == c) || (a != b && b!=c && c!= a) ){
 					return true;
@@ -223,8 +223,8 @@
 				}
 			}
 
-			function checkSet(){
-				if (checkProperty(0) && checkProperty(1) && checkProperty(2) && checkProperty(3)){
+			function checkSet(array){
+				if (checkProperty(array,0) && checkProperty(array,) && checkProperty(array,2) && checkProperty(array,3)){
 					return true;
 				} else{
 					return false;
@@ -286,21 +286,32 @@
 				console.log(sets);
 			}*/
 
-			function findSet(){
-				var localSet = [];
 
+
+			function findSet(){
+			var localSet = [];
+			var isSet = false;
 				for (var a=0;a<displayDeck.length;a++){
 					localSet[0]=displayDeck[a][4];
 					for (var b=0;b<displayDeck.length;b++){
 						localSet[1]=displayDeck[b][4];
-						for (var c=0;a<displayDeck.length;c++){
+						for (var c=0;c<displayDeck.length;c++){
 							localSet[2]=displayDeck[c][4];
+							localSet.sort();
+							if (!checkDups(localSet) && checkSet(localSet)){
+								console.log(localSet);
+								var isSet =true;
+							}
 
-							if (checkSet)
 
 						}
 					}
 				}
+
+			if (!isSet){
+				console.log("No sets!");
+			}
+
 			}
 
 			function checkDups(array){
